@@ -12,23 +12,31 @@ class ofApp : public ofBaseApp {
 		vector<ofImage> neg;
         ofxPanel gui;
         ofParameter<ofVec3f> translate;
-        ofxReflectionRefraction Ref;
+        vector<ofxReflectionRefraction> Ref;
         ofMesh sphere;
+        ofMesh box;
 
         void setup(){
             ofSetVerticalSync(false);
 
             gui.setup();
-            gui.add(translate.set("translate",ofVec3f(0),ofVec3f(-1000),ofVec3f(1000)));
+            gui.add(translate.set("translate",ofVec3f(120,0,150),ofVec3f(-1000),ofVec3f(1000)));
 
             sphere = ofMesh::sphere(100,20,OF_PRIMITIVE_TRIANGLES);
+            box   = ofMesh::box(100,100,100,1,1,1);
             ofImage px("cubemap6/posx.jpg"); pos.push_back(px);
             ofImage py("cubemap6/posy.jpg"); pos.push_back(py);
             ofImage pz("cubemap6/posz.jpg"); pos.push_back(pz);
             ofImage nx("cubemap6/negx.jpg"); neg.push_back(nx);
             ofImage ny("cubemap6/negy.jpg"); neg.push_back(ny);
             ofImage nz("cubemap6/negz.jpg"); neg.push_back(nz);
-            Ref.setup(sphere,pos,neg);
+
+            ofxReflectionRefraction r1;
+            r1.setup(sphere,pos,neg,true);
+            Ref.push_back(r1);
+            ofxReflectionRefraction r2;
+            r2.setup(box,pos,neg,false);
+            Ref.push_back(r2);
 
 			cam.setNearClip(.01);
 			cam.setFarClip(100000);
@@ -44,8 +52,11 @@ class ofApp : public ofBaseApp {
 			cam.begin();
             ofEnableDepthTest();
             glEnable(GL_CULL_FACE);
-            Ref.drawBackground(cam);
-            Ref.drawMeshGlass(cam,translate.get());
+
+            Ref[0].drawBackground(cam);
+
+            Ref[0].drawMeshGlass(cam,ofVec3f(0));
+            Ref[1].drawMeshGlass(cam,translate.get());
 
             glDisable(GL_CULL_FACE);
             ofDisableDepthTest();
@@ -54,81 +65,32 @@ class ofApp : public ofBaseApp {
             gui.draw();
 		}
 
+        void reload(int num) {
+            pos.clear(); neg.clear(); Ref.clear();
+            ofImage px("cubemap"+ofToString(num)+"/posx.jpg"); pos.push_back(px);
+            ofImage py("cubemap"+ofToString(num)+"/posy.jpg"); pos.push_back(py);
+            ofImage pz("cubemap"+ofToString(num)+"/posz.jpg"); pos.push_back(pz);
+            ofImage nx("cubemap"+ofToString(num)+"/negx.jpg"); neg.push_back(nx);
+            ofImage ny("cubemap"+ofToString(num)+"/negy.jpg"); neg.push_back(ny);
+            ofImage nz("cubemap"+ofToString(num)+"/negz.jpg"); neg.push_back(nz);
+            ofxReflectionRefraction r;
+            r.setup(sphere,pos,neg,true);
+            Ref.push_back(r);
+            r.setup(box,pos,neg,false);
+        }
+
         void keyPressed(int key) {
-            if(key == '1'){
-                pos.clear(); neg.clear();
-                ofImage px("cubemap1/posx.jpg"); pos.push_back(px);
-                ofImage py("cubemap1/posy.jpg"); pos.push_back(py);
-                ofImage pz("cubemap1/posz.jpg"); pos.push_back(pz);
-                ofImage nx("cubemap1/negx.jpg"); neg.push_back(nx);
-                ofImage ny("cubemap1/negy.jpg"); neg.push_back(ny);
-                ofImage nz("cubemap1/negz.jpg"); neg.push_back(nz);
-                Ref.setup(sphere,pos,neg);
-            }
-            if(key == '2'){
-                pos.clear(); neg.clear();
-                ofImage px("cubemap2/posx.jpg"); pos.push_back(px);
-                ofImage py("cubemap2/posy.jpg"); pos.push_back(py);
-                ofImage pz("cubemap2/posz.jpg"); pos.push_back(pz);
-                ofImage nx("cubemap2/negx.jpg"); neg.push_back(nx);
-                ofImage ny("cubemap2/negy.jpg"); neg.push_back(ny);
-                ofImage nz("cubemap2/negz.jpg"); neg.push_back(nz);
-                Ref.setup(sphere,pos,neg);
-            }
-            if(key == '3'){
-                pos.clear(); neg.clear();
-                ofImage px("cubemap3/posx.jpg"); pos.push_back(px);
-                ofImage py("cubemap3/posy.jpg"); pos.push_back(py);
-                ofImage pz("cubemap3/posz.jpg"); pos.push_back(pz);
-                ofImage nx("cubemap3/negx.jpg"); neg.push_back(nx);
-                ofImage ny("cubemap3/negy.jpg"); neg.push_back(ny);
-                ofImage nz("cubemap3/negz.jpg"); neg.push_back(nz);
-                Ref.setup(sphere,pos,neg);
-            }
-            if(key == '4'){
-                pos.clear(); neg.clear();
-                ofImage px("cubemap4/posx.jpg"); pos.push_back(px);
-                ofImage py("cubemap4/posy.jpg"); pos.push_back(py);
-                ofImage pz("cubemap4/posz.jpg"); pos.push_back(pz);
-                ofImage nx("cubemap4/negx.jpg"); neg.push_back(nx);
-                ofImage ny("cubemap4/negy.jpg"); neg.push_back(ny);
-                ofImage nz("cubemap4/negz.jpg"); neg.push_back(nz);
-                Ref.setup(sphere,pos,neg);
-            }
-            if(key == '5'){
-                pos.clear(); neg.clear();
-                ofImage px("cubemap5/posx.jpg"); pos.push_back(px);
-                ofImage py("cubemap5/posy.jpg"); pos.push_back(py);
-                ofImage pz("cubemap5/posz.jpg"); pos.push_back(pz);
-                ofImage nx("cubemap5/negx.jpg"); neg.push_back(nx);
-                ofImage ny("cubemap5/negy.jpg"); neg.push_back(ny);
-                ofImage nz("cubemap5/negz.jpg"); neg.push_back(nz);
-                Ref.setup(sphere,pos,neg);
-            }
-            if(key == '6'){
-                pos.clear(); neg.clear();
-                ofImage px("cubemap6/posx.jpg"); pos.push_back(px);
-                ofImage py("cubemap6/posy.jpg"); pos.push_back(py);
-                ofImage pz("cubemap6/posz.jpg"); pos.push_back(pz);
-                ofImage nx("cubemap6/negx.jpg"); neg.push_back(nx);
-                ofImage ny("cubemap6/negy.jpg"); neg.push_back(ny);
-                ofImage nz("cubemap6/negz.jpg"); neg.push_back(nz);
-                Ref.setup(sphere,pos,neg);
-            }
-            if(key == '7'){
-                pos.clear(); neg.clear();
-                ofImage px("cubemap7/posx.jpg"); pos.push_back(px);
-                ofImage py("cubemap7/posy.jpg"); pos.push_back(py);
-                ofImage pz("cubemap7/posz.jpg"); pos.push_back(pz);
-                ofImage nx("cubemap7/negx.jpg"); neg.push_back(nx);
-                ofImage ny("cubemap7/negy.jpg"); neg.push_back(ny);
-                ofImage nz("cubemap7/negz.jpg"); neg.push_back(nz);
-                Ref.setup(sphere,pos,neg);
-            }
+            if(key == '1') reload(1);
+            if(key == '2') reload(2);
+            if(key == '3') reload(3);
+            if(key == '4') reload(4);
+            if(key == '5') reload(5);
+            if(key == '6') reload(6);
+            if(key == '7') reload(7);
       }
 };
 
 int main(){
-	ofSetupOpenGL(1024,768, OF_WINDOW);
+    ofSetupOpenGL(1280,700, OF_WINDOW);
 	ofRunApp( new ofApp() );
 }

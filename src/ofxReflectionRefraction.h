@@ -31,16 +31,18 @@ class ofxReflectionRefraction : public ofBaseApp{
             glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_Z, 0, GL_RGB, size, size, 0, GL_RGB, GL_UNSIGNED_BYTE, nz);
         }
 
-        void setup(ofMesh _mesh, vector<ofImage> positive, vector<ofImage> negative, int sizeSkyBox=2000){
+        void setup(ofMesh _mesh, vector<ofImage> positive, vector<ofImage> negative, bool noSky, int sizeSkyBox=2000){
             sizeVboMesh=_mesh.getNumIndices();
             vbo.setMesh(_mesh, GL_STATIC_DRAW);
 
-            ofMesh xbox = ofMesh::sphere(sizeSkyBox,20,OF_PRIMITIVE_TRIANGLES);
-            sizeBox=xbox.getNumIndices();
-            Box.setMesh(xbox, GL_STATIC_DRAW);
+            if(noSky) {
+                ofMesh xbox = ofMesh::sphere(sizeSkyBox,20,OF_PRIMITIVE_TRIANGLES);
+                sizeBox=xbox.getNumIndices();
+                Box.setMesh(xbox, GL_STATIC_DRAW);
+            }
 
             ofDisableArbTex();
-            bg.load("shader/background.vert.glsl","shader/background.frag.glsl");
+            if(noSky) bg.load("shader/background.vert.glsl","shader/background.frag.glsl");
             glass.load("shader/glass.vert.glsl","shader/glass.frag.glsl");
             prepareCubeMap(positive,negative);
         }
