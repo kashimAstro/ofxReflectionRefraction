@@ -1,4 +1,5 @@
 #include "ofMain.h"
+#include "glsl.h"
 
 class ofxReflectionRefraction : public ofBaseApp{
 	public:
@@ -7,9 +8,12 @@ class ofxReflectionRefraction : public ofBaseApp{
         ofVbo vbo,Box;
         int sizeVboMesh,sizeBox;
         unsigned int Ctexture;
+        GLSL glsl;
 
         void prepareCubeMap(vector<ofImage> facePositive, vector<ofImage> faceNegative){
             int size = facePositive[0].getWidth();
+            glDeleteTextures(1, &Ctexture);
+
             glGenTextures(1, &Ctexture);
             glBindTexture(GL_TEXTURE_CUBE_MAP, Ctexture);
             glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
@@ -42,8 +46,24 @@ class ofxReflectionRefraction : public ofBaseApp{
             }
 
             ofDisableArbTex();
-            if(noSky) bg.load("shader/background.vert.glsl","shader/background.frag.glsl");
-            glass.load("shader/glass.vert.glsl","shader/glass.frag.glsl");
+            vector<string> v = glsl.setup();
+            if(noSky) {                
+                bg.setupShaderFromSource(GL_VERTEX_SHADER,v[0]);
+                bg.setupShaderFromSource(GL_FRAGMENT_SHADER,v[1]);
+                if(ofIsGLProgrammableRenderer()) {
+                    bg.bindDefaults();
+                }
+                bg.linkProgram();
+            }
+            //
+            glass.setupShaderFromSource(GL_VERTEX_SHADER,v[2]);
+            glass.setupShaderFromSource(GL_FRAGMENT_SHADER,v[3]);
+            if(ofIsGLProgrammableRenderer()) {
+                glass.bindDefaults();
+            }
+            glass.linkProgram();
+
+
             prepareCubeMap(positive,negative);
         }
 

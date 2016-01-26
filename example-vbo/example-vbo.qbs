@@ -13,10 +13,6 @@ Project{
 
         files: [
             'src/main.cpp',
-            'bin/data/shader/background.frag.glsl',
-            'bin/data/shader/background.vert.glsl',
-            'bin/data/shader/glass.frag.glsl',
-            'bin/data/shader/glass.vert.glsl',
         ]
 
         of.addons: [

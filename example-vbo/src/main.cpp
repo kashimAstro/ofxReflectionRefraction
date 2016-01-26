@@ -7,9 +7,9 @@
 
 class ofApp : public ofBaseApp {
 	public:
-		ofEasyCam cam;
-		vector<ofImage> pos;
-		vector<ofImage> neg;
+        ofEasyCam cam;
+        vector<ofImage> pos;
+        vector<ofImage> neg;
         ofxPanel gui;
         ofParameter<ofVec3f> translate;
         vector<ofxReflectionRefraction> Ref;
@@ -38,18 +38,18 @@ class ofApp : public ofBaseApp {
             r2.setup(box,pos,neg,false);
             Ref.push_back(r2);
 
-			cam.setNearClip(.01);
-			cam.setFarClip(100000);
-		}
+            cam.setNearClip(.01);
+            cam.setFarClip(100000);
+        }
 
-		void update(){
+        void update(){
             ofSetWindowTitle(ofToString(ofGetFrameRate()));
-		}
+        }
 
         void draw(){
             ofBackgroundGradient(ofColor(160),ofColor(0));
 
-			cam.begin();
+            cam.begin();
             ofEnableDepthTest();
             glEnable(GL_CULL_FACE);
 
@@ -60,10 +60,10 @@ class ofApp : public ofBaseApp {
 
             glDisable(GL_CULL_FACE);
             ofDisableDepthTest();
-			cam.end();
+            cam.end();
 
             gui.draw();
-		}
+        }
 
         void reload(int num) {
             pos.clear(); neg.clear(); Ref.clear();
@@ -91,6 +91,10 @@ class ofApp : public ofBaseApp {
 };
 
 int main(){
-    ofSetupOpenGL(1280,700, OF_WINDOW);
-	ofRunApp( new ofApp() );
+    ofGLWindowSettings s;
+    s.setGLVersion(3, 2);
+    s.width=1366;
+    s.height=768;
+    ofCreateWindow(s);
+    ofRunApp( new ofApp() );
 }
