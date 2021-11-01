@@ -89,7 +89,7 @@ class ofxReflectionRefraction : public ofBaseApp{
             tra.preMultTranslate(translate);
             glass.begin();
             glass.setUniformMatrix4f("u_viewProjectionMatrix",cam.getProjectionMatrix());
-            glass.setUniformMatrix4f("u_modelMatrix",cam.getModelViewMatrix()*tra);
+            glass.setUniformMatrix4f("u_modelMatrix",tra*cam.getModelViewMatrix());
             glass.setUniformMatrix3f("u_normalMatrix",mat4ToMat3(ofGetCurrentNormalMatrix()));
             glass.setUniform4f("u_camera",cam.getGlobalPosition().x,
                                           cam.getGlobalPosition().y,
